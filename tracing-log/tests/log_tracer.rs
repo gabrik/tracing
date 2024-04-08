@@ -13,9 +13,6 @@ struct OwnedMetadata {
     name: String,
     target: String,
     level: Level,
-    module_path: Option<String>,
-    file: Option<String>,
-    line: Option<u32>,
 }
 
 struct TestSubscriber(Arc<State>);
@@ -46,9 +43,6 @@ impl Subscriber for TestSubscriber {
                 name: normalized.name().to_string(),
                 target: normalized.target().to_string(),
                 level: *normalized.level(),
-                module_path: None,
-                file: None,
-                line: None,
             }),
         )
     }
@@ -81,9 +75,6 @@ fn normalized_metadata() {
                 name: "log event".to_string(),
                 target: "".to_string(),
                 level: Level::INFO,
-                module_path: None,
-                file: None,
-                line: None,
             }),
         );
 
@@ -103,9 +94,6 @@ fn normalized_metadata() {
                 name: "log event".to_string(),
                 target: "log_tracer_target".to_string(),
                 level: Level::INFO,
-                module_path: Some("log_tracer".to_string()),
-                file: Some("server.rs".to_string()),
-                line: Some(144),
             }),
         );
 
