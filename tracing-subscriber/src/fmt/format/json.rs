@@ -274,17 +274,6 @@ where
                 serializer.serialize_entry("target", meta.target())?;
             }
 
-            if self.display_filename {
-                if let Some(filename) = meta.file() {
-                    serializer.serialize_entry("filename", filename)?;
-                }
-            }
-
-            if self.display_line_number {
-                if let Some(line_number) = meta.line() {
-                    serializer.serialize_entry("line_number", &line_number)?;
-                }
-            }
 
             if self.format.display_current_span {
                 if let Some(ref span) = current_span {

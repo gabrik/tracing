@@ -243,9 +243,6 @@ macro_rules! metadata {
             $name,
             $target,
             $level,
-            ::core::option::Option::None,
-            ::core::option::Option::None,
-            ::core::option::Option::None,
             $crate::field::FieldSet::new($fields, $crate::identify_callsite!($callsite)),
             $kind,
         )

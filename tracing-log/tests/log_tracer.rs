@@ -46,9 +46,9 @@ impl Subscriber for TestSubscriber {
                 name: normalized.name().to_string(),
                 target: normalized.target().to_string(),
                 level: *normalized.level(),
-                module_path: normalized.module_path().map(String::from),
-                file: normalized.file().map(String::from),
-                line: normalized.line(),
+                module_path: None,
+                file: None,
+                line: None,
             }),
         )
     }

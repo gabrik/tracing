@@ -990,33 +990,7 @@ where
             )?;
         }
 
-        let line_number = if self.display_line_number {
-            meta.line()
-        } else {
-            None
-        };
 
-        if self.display_filename {
-            if let Some(filename) = meta.file() {
-                write!(
-                    writer,
-                    "{}{}{}",
-                    dimmed.paint(filename),
-                    dimmed.paint(":"),
-                    if line_number.is_some() { "" } else { " " }
-                )?;
-            }
-        }
-
-        if let Some(line_number) = line_number {
-            write!(
-                writer,
-                "{}{}:{} ",
-                dimmed.prefix(),
-                line_number,
-                dimmed.suffix()
-            )?;
-        }
 
         ctx.format_fields(writer.by_ref(), event)?;
         writeln!(writer)
@@ -1109,29 +1083,6 @@ where
             needs_space = true;
         }
 
-        if self.display_filename {
-            if let Some(filename) = meta.file() {
-                if self.display_target {
-                    writer.write_char(' ')?;
-                }
-                write!(writer, "{}{}", dimmed.paint(filename), dimmed.paint(":"))?;
-                needs_space = true;
-            }
-        }
-
-        if self.display_line_number {
-            if let Some(line_number) = meta.line() {
-                write!(
-                    writer,
-                    "{}{}{}{}",
-                    dimmed.prefix(),
-                    line_number,
-                    dimmed.suffix(),
-                    dimmed.paint(":")
-                )?;
-                needs_space = true;
-            }
-        }
 
         if needs_space {
             writer.write_char(' ')?;

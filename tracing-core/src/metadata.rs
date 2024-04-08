@@ -65,18 +65,6 @@ pub struct Metadata<'a> {
     /// The level of verbosity of the described span.
     level: Level,
 
-    /// The name of the Rust module where the span occurred, or `None` if this
-    /// could not be determined.
-    module_path: Option<&'a str>,
-
-    /// The name of the source code file where the span occurred, or `None` if
-    /// this could not be determined.
-    file: Option<&'a str>,
-
-    /// The line number in the source code file where the span occurred, or
-    /// `None` if this could not be determined.
-    line: Option<u32>,
-
     /// The names of the key-value fields attached to the described span or
     /// event.
     fields: field::FieldSet,
@@ -254,9 +242,6 @@ impl<'a> Metadata<'a> {
         name: &'static str,
         target: &'a str,
         level: Level,
-        file: Option<&'a str>,
-        line: Option<u32>,
-        module_path: Option<&'a str>,
         fields: field::FieldSet,
         kind: Kind,
     ) -> Self {
@@ -264,9 +249,6 @@ impl<'a> Metadata<'a> {
             name,
             target,
             level,
-            module_path,
-            file,
-            line,
             fields,
             kind,
         }
@@ -297,24 +279,6 @@ impl<'a> Metadata<'a> {
         self.target
     }
 
-    /// Returns the path to the Rust module where the span occurred, or
-    /// `None` if the module path is unknown.
-    pub fn module_path(&self) -> Option<&'a str> {
-        self.module_path
-    }
-
-    /// Returns the name of the source code file where the span
-    /// occurred, or `None` if the file is unknown
-    pub fn file(&self) -> Option<&'a str> {
-        self.file
-    }
-
-    /// Returns the line number in the source code file where the span
-    /// occurred, or `None` if the line number is unknown.
-    pub fn line(&self) -> Option<u32> {
-        self.line
-    }
-
     /// Returns an opaque `Identifier` that uniquely identifies the callsite
     /// this `Metadata` originated from.
     #[inline]
@@ -340,24 +304,6 @@ impl<'a> fmt::Debug for Metadata<'a> {
             .field("target", &self.target)
             .field("level", &self.level);
 
-        if let Some(path) = self.module_path() {
-            meta.field("module_path", &path);
-        }
-
-        match (self.file(), self.line()) {
-            (Some(file), Some(line)) => {
-                meta.field("location", &format_args!("{}:{}", file, line));
-            }
-            (Some(file), None) => {
-                meta.field("file", &format_args!("{}", file));
-            }
-
-            // Note: a line num with no file is a kind of weird case that _probably_ never occurs...
-            (None, Some(line)) => {
-                meta.field("line", &line);
-            }
-            (None, None) => {}
-        };
 
         meta.field("fields", &format_args!("{}", self.fields))
             .field("callsite", &self.callsite())
@@ -463,9 +409,6 @@ impl<'a> PartialEq for Metadata<'a> {
                 name: lhs_name,
                 target: lhs_target,
                 level: lhs_level,
-                module_path: lhs_module_path,
-                file: lhs_file,
-                line: lhs_line,
                 fields: lhs_fields,
                 kind: lhs_kind,
             } = self;
@@ -474,9 +417,6 @@ impl<'a> PartialEq for Metadata<'a> {
                 name: rhs_name,
                 target: rhs_target,
                 level: rhs_level,
-                module_path: rhs_module_path,
-                file: rhs_file,
-                line: rhs_line,
                 fields: rhs_fields,
                 kind: rhs_kind,
             } = &other;
@@ -488,9 +428,6 @@ impl<'a> PartialEq for Metadata<'a> {
                 && lhs_name == rhs_name
                 && lhs_target == rhs_target
                 && lhs_level == rhs_level
-                && lhs_module_path == rhs_module_path
-                && lhs_file == rhs_file
-                && lhs_line == rhs_line
                 && lhs_fields == rhs_fields
                 && lhs_kind == rhs_kind
         }

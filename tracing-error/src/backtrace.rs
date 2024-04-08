@@ -205,13 +205,7 @@ impl fmt::Display for SpanTrace {
                 try_bool!(write!(f, "\n           with {}", fields), err);
             }
 
-            if let Some((file, line)) = metadata
-                .file()
-                .and_then(|file| metadata.line().map(|line| (file, line)))
-            {
-                try_bool!(write!(f, "\n             at {}:{}", file, line), err);
-            }
-
+           
             span += 1;
             true
         });
@@ -240,13 +234,7 @@ impl fmt::Debug for SpanTrace {
                     write!(f, ", fields: {:?}", self.fields)?;
                 }
 
-                if let Some((file, line)) = self
-                    .metadata
-                    .file()
-                    .and_then(|file| self.metadata.line().map(|line| (file, line)))
-                {
-                    write!(f, ", file: {:?}, line: {:?}", file, line)?;
-                }
+                
 
                 write!(f, " }}")?;
 

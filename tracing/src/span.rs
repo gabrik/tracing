@@ -1403,17 +1403,6 @@ impl fmt::Debug for Span {
                 span.field("disabled", &true);
             }
 
-            if let Some(ref path) = meta.module_path() {
-                span.field("module_path", &path);
-            }
-
-            if let Some(ref line) = meta.line() {
-                span.field("line", &line);
-            }
-
-            if let Some(ref file) = meta.file() {
-                span.field("file", &file);
-            }
         } else {
             span.field("none", &true);
         }

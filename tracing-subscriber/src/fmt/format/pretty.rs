@@ -224,28 +224,7 @@ where
                 target_style.infix(style)
             )?;
         }
-        let line_number = if self.display_line_number {
-            meta.line()
-        } else {
-            None
-        };
 
-        // If the file name is disabled, format the line number right after the
-        // target. Otherwise, if we also display the file, it'll go on a
-        // separate line.
-        if let (Some(line_number), false, true) = (
-            line_number,
-            self.display_filename,
-            self.format.display_location,
-        ) {
-            write!(
-                writer,
-                "{}{}{}:",
-                style.prefix(),
-                line_number,
-                style.infix(style)
-            )?;
-        }
 
         writer.write_char(' ')?;
 
@@ -261,20 +240,6 @@ where
         };
         let thread = self.display_thread_name || self.display_thread_id;
 
-        if let (Some(file), true, true) = (
-            meta.file(),
-            self.format.display_location,
-            self.display_filename,
-        ) {
-            write!(writer, "    {} {}", dimmed.paint("at"), file,)?;
-
-            if let Some(line) = line_number {
-                write!(writer, ":{}", line)?;
-            }
-            writer.write_char(if thread { ' ' } else { '\n' })?;
-        } else if thread {
-            write!(writer, "    ")?;
-        };
 
         if thread {
             write!(writer, "{} ", dimmed.paint("on"))?;

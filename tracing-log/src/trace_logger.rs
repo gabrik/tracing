@@ -176,9 +176,6 @@ struct SpanLineBuilder {
     parent: Option<Id>,
     ref_count: usize,
     fields: String,
-    file: Option<String>,
-    line: Option<u32>,
-    module_path: Option<String>,
     target: String,
     level: log::Level,
     name: &'static str,
@@ -190,9 +187,6 @@ impl SpanLineBuilder {
             parent,
             ref_count: 1,
             fields,
-            file: meta.file().map(String::from),
-            line: meta.line(),
-            module_path: meta.module_path().map(String::from),
             target: String::from(meta.target()),
             level: meta.level().as_log(),
             name: meta.name(),
@@ -214,9 +208,6 @@ impl SpanLineBuilder {
                 &log::Record::builder()
                     .metadata(log_meta)
                     .target(self.target.as_ref())
-                    .module_path(self.module_path.as_ref().map(String::as_ref))
-                    .file(self.file.as_ref().map(String::as_ref))
-                    .line(self.line)
                     .args(format_args!("close {}; {}", self.name, self.fields))
                     .build(),
             );
@@ -297,9 +288,6 @@ impl Subscriber for TraceLogger {
                             &log::Record::builder()
                                 .metadata(log_meta)
                                 .target(span.target.as_ref())
-                                .module_path(span.module_path.as_ref().map(String::as_ref))
-                                .file(span.file.as_ref().map(String::as_ref))
-                                .line(span.line)
                                 .args(format_args!(
                                     "enter {}; in={:?}; {}",
                                     span.name, current_id, current_fields
@@ -311,9 +299,6 @@ impl Subscriber for TraceLogger {
                             &log::Record::builder()
                                 .metadata(log_meta)
                                 .target(span.target.as_ref())
-                                .module_path(span.module_path.as_ref().map(String::as_ref))
-                                .file(span.file.as_ref().map(String::as_ref))
-                                .line(span.line)
                                 .args(format_args!("enter {}; {}", span.name, current_fields))
                                 .build(),
                         );
@@ -342,9 +327,6 @@ impl Subscriber for TraceLogger {
                         &log::Record::builder()
                             .metadata(log_meta)
                             .target(span.target.as_ref())
-                            .module_path(span.module_path.as_ref().map(String::as_ref))
-                            .file(span.file.as_ref().map(String::as_ref))
-                            .line(span.line)
                             .args(format_args!("exit {}", span.name))
                             .build(),
                     );
@@ -375,9 +357,6 @@ impl Subscriber for TraceLogger {
                 &log::Record::builder()
                     .metadata(log_meta)
                     .target(meta.target())
-                    .module_path(meta.module_path().as_ref().cloned())
-                    .file(meta.file().as_ref().cloned())
-                    .line(meta.line())
                     .args(format_args!(
                         "{}{}{}{}",
                         parent.unwrap_or(""),

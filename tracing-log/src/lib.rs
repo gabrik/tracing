@@ -260,9 +260,6 @@ impl<'a> AsTrace for log::Metadata<'a> {
             "log record",
             self.target(),
             self.level().as_trace(),
-            None,
-            None,
-            None,
             field::FieldSet::new(FIELD_NAMES, cs_id),
             Kind::EVENT,
         )
@@ -311,9 +308,6 @@ macro_rules! log_cs {
             "log event",
             "log",
             $level,
-            ::core::option::Option::None,
-            ::core::option::Option::None,
-            ::core::option::Option::None,
             field::FieldSet::new(FIELD_NAMES, identify_callsite!(&$cs)),
             Kind::EVENT,
         );
@@ -390,9 +384,6 @@ impl<'a> AsTrace for log::Record<'a> {
             "log record",
             self.target(),
             self.level().as_trace(),
-            self.file(),
-            self.line(),
-            self.module_path(),
             field::FieldSet::new(FIELD_NAMES, cs_id),
             Kind::EVENT,
         )
@@ -504,9 +495,6 @@ impl<'a> NormalizeEvent<'a> for Event<'a> {
                 "log event",
                 fields.target.unwrap_or("log"),
                 *original.level(),
-                fields.file,
-                fields.line.map(|l| l as u32),
-                fields.module_path,
                 field::FieldSet::new(&["message"], original.callsite()),
                 Kind::EVENT,
             ))
